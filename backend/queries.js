@@ -1,12 +1,13 @@
 const Pool = require('pg').Pool
 var fs = require('fs');
+require('dotenv').config({ path: '../.env' });
 
 const pool = new Pool({
-    user: "doadmin",
-    host: "db-postgresql-fra1-41066-do-user-12314691-0.b.db.ondigitalocean.com",
-    database: "defaultdb",
-    password: "AVNS_UWQZw6h-0tsoanjAf2Z",
-    port: 25060,
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT,
     ssl: {
         ca: fs.readFileSync('ca-certificate.crt')
     }
