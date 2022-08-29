@@ -1,28 +1,24 @@
-const { Client } = require("pg")
-var fs = require('fs');
-const dotenv = require("dotenv")
-dotenv.config()
+const express = require('express')
+const bodyParser = require('body-parser')
+const app = express()
+const db = require('./queries')
+const port = 3000
 
-const connectDb = async () => {
-    try {
-        const client = new Client({
-            user: "doadmin",
-            host: "db-postgresql-fra1-41066-do-user-12314691-0.b.db.ondigitalocean.com",
-            database: "defaultdb",
-            password: "AVNS_UWQZw6h-0tsoanjAf2Z",
-            port: 25060,
-            ssl: {
-                ca: fs.readFileSync('ca-certificate.crt')
-            }
-        })
+app.use(bodyParser.json())
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+)
 
-        await client.connect()
-        const res = await client.query('SELECT * FROM tickets')
-        console.log(res)
-        await client.end()
-    } catch (error) {
-        console.log(error)
-    }
-}
+app.get('/', (request, response) => {
+    response.json({ info: 'Node.js, Express, and Postgres API' })
+})
 
-connectDb()
+app.post('/insertTicket', db.insertTicket)
+app.put('/updateTicket', db.updateTicket)
+app.delete('/deleteTicket', db.deleteTicket)
+
+app.listen(port, () => {
+    console.log(`App running on port ${port}.`)
+})
