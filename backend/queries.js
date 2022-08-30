@@ -16,11 +16,21 @@ const pool = new Pool({
 const insertTicket = (request, response) => {
     const { hash, endDate } = request.body
 
-    pool.query('INSERT INTO tickets (id, end_date) VALUES ($1, $2)', [hash, endDate], (error, results) => {
+    pool.query('SELECT (id, end_date, email) FROM tickets WHERE id = ($1)', [hash], (error, selectResult) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Ticket inserted successfully`)
+
+        if (selectResult.rowCount == 0) {
+            pool.query('INSERT INTO tickets (id, end_date) VALUES ($1, $2)', [hash, endDate], (error, insertResult) => {
+                if (error) {
+                    throw error
+                }
+                response.status(201).send(`Ticket inserted successfully`)
+            })
+        }
+        else
+            response.status(409).send('Ticket already exists')
     })
 }
 
