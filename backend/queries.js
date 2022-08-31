@@ -38,7 +38,7 @@ const updateTicket = (request, response) => {
     const { hash, email } = request.body
 
     pool.query(
-        'UPDATE tickets SET email = $1 WHERE id = $2', [email, hash], (error, results) => {
+        'UPDATE tickets SET email = $1 WHERE id = $2 AND email is null', [email, hash], (error, results) => {
             if (error) {
                 throw error
             }
