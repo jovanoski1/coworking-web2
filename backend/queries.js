@@ -30,7 +30,7 @@ const insertTicket = (request, response) => {
             })
         }
         else
-            response.status(409).send('Ticket already exists')
+            response.status(208).send('Ticket already exists')
     })
 }
 
