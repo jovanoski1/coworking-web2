@@ -13,6 +13,17 @@ const pool = new Pool({
     }
 })
 
+const selectEmail = (request, response) => {
+    const { hash } = request.body
+
+    pool.query('SELECT COALESCE(email, \'Not redeemed\') AS result FROM tickets where id= $1', [hash], (error, results) => {
+        if (error) {
+            throw error
+        }
+        response.status(200).send(results.rows[0].result)
+    })
+}
+
 const insertTicket = (request, response) => {
     const { hash, endDate } = request.body
 
@@ -61,5 +72,6 @@ const deleteTicket = (request, response) => {
 module.exports = {
     insertTicket,
     updateTicket,
-    deleteTicket
+    deleteTicket,
+    selectEmail
 }
