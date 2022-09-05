@@ -20,7 +20,7 @@ const selectEmail = (request, response) => {
         if (error) {
             throw error
         }
-        response.status(200).send(results.rows[0].result)
+        response.status(200).send(results.rows)
     })
 }
 
