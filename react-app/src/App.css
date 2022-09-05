@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+form{
+  width: 50%;
+  margin-left: 25%;
+  margin-top: 5%;
+}
+h2{
+  color: white;
+  font-size: 80px;
+  margin-left: 25%;
+  margin-top: 10%;
+  z-index: 100;
+}
+.btn{
+  font-size: 25px;
+  z-index: 100;
+}
+.form-control{
+  font-size: 20px;
+}
+
+.fireworks{
+  z-index: -1;
+}

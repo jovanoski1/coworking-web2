@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "cors": "^2.8.5"
+    "@emailjs/browser": "^3.7.0",
+    "bootstrap": "^5.2.0",
+    "cors": "^2.8.5",
+    "react-tsparticles": "^2.2.4",
+    "tsparticles": "^2.2.4"
   }
 }
