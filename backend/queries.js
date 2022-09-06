@@ -20,7 +20,11 @@ const selectEmail = (request, response) => {
         if (error) {
             throw error
         }
-        response.status(200).send(results.rows)
+
+        if (results.rowCount > 0)
+            response.status(200).send(results.rows)
+        else
+            response.status(200).send("No hashes")
     })
 }
 
