@@ -24,7 +24,7 @@ const selectEmail = (request, response) => {
         if (results.rowCount > 0)
             response.status(200).send(results.rows)
         else
-            response.status(200).send("No hashes")
+            response.status(200).send("[{\"result\": \"no_hashes\"}]")
     })
 }
 
