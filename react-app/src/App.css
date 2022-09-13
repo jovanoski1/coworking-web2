@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -43,7 +43,7 @@ form{
   margin-top: 5%;
 }
 h2{
-  color: white;
+  color: black;
   font-size: 80px;
   margin-left: 25%;
   margin-top: 10%;
@@ -59,4 +59,7 @@ h2{
 
 .fireworks{
   z-index: -1;
+}
+.qrCode {
+  margin-top: 5%;
 }
