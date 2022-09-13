@@ -48,6 +48,8 @@ app.post('/insertTicket', db.insertTicket)
 app.put('/updateTicket', db.updateTicket)
 app.delete('/deleteTicket', db.deleteTicket)
 app.post('/selectEmail', db.selectEmail)
+app.put('/generateVerificationCode', db.generateVerificationCode);
+app.post('/checkVerificationCode', db.checkVerificationCode)
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

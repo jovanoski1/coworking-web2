@@ -13,6 +13,10 @@ const pool = new Pool({
     }
 })
 
+const sendGridMail = require('@sendgrid/mail');
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
 const selectEmail = (request, response) => {
     const { hash } = request.body
 
@@ -73,9 +77,68 @@ const deleteTicket = (request, response) => {
     })
 }
 
+function getMessage(email, code) {
+    const body = 'Your code for redeeming ticket for BeoSeats is: ' + code;
+    return {
+        to: email,
+        from: 'beoseats@gmail.com',
+        subject: 'BeoSeat verification code',
+        text: body,
+        html: `<strong>${body}</strong>`,
+    };
+}
+
+async function sendEmail(email, code) {
+    try {
+        await sendGridMail.send(getMessage(email, code));
+        console.log('Test email sent successfully');
+    } catch (error) {
+        console.error('Error sending test email');
+        console.error(error);
+        if (error.response) {
+            console.error(error.response.body)
+        }
+    }
+}
+
+async function generateVerificationCode(request, response) {
+    const { email, hash } = request.body
+
+    const rand = Math.floor(Math.random() * (1000000 - 100000) + 100000); //rand in range [100000, 999999]
+
+    pool.query(
+        'UPDATE tickets SET code = $1 WHERE email = $2 AND id = $3', [rand, email, hash], (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).send(`Code generated form email: ${email}`)
+        }
+    )
+
+    await sendEmail(email, rand);
+}
+
+const checkVerificationCode = (request, response) => {
+    const { code, hash } = request.body
+
+    pool.query('SELECT code AS result FROM tickets where code = $1 AND id = $2', [code, hash], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        if (results.rowCount > 0)
+            response.status(200).send("[{\"result\": \"valid_code\"}]")
+        else
+            response.status(200).send("[{\"result\": \"invalid_code\"}]")
+    })
+}
+
+
 module.exports = {
     insertTicket,
     updateTicket,
     deleteTicket,
-    selectEmail
+    selectEmail,
+    generateVerificationCode,
+    checkVerificationCode
 }
