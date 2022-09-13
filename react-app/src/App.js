@@ -4,12 +4,15 @@ import {useRef} from "react";
 import emailjs from '@emailjs/browser';
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import Form from './components/Form';
 import Popup from './components/Popup';
 
 function App() {
   const form=useRef();
   
   const [buttonPopup,setButtonPopup]=useState(false);
+  const [emailProvided,setEmailProvided] = useState(false);
+  const [text, setText] = useState();
   const params = new URLSearchParams(window.location.search);
 
   const sendEmail = e => {
@@ -36,6 +39,9 @@ function App() {
          body: JSON.stringify({hash,email})
       });
        sendEmail(e);
+       setButtonPopup(true);
+       setEmailProvided(true);
+       setText('The verification code has been sent to your email!');
        console.log(response);
      }
      catch(err)
@@ -43,6 +49,14 @@ function App() {
        console.error(err.message);
      }
 
+  }
+  const onSubmitVerificationCode = async e => {
+    e.preventDefault();
+    setButtonPopup(true);
+    setText('You have successfully redeemed your ticket for BeoSpace');
+  }
+  const closePopUp = () => {
+    setButtonPopup(false);
   }
 
   const particlesInit = async (main) => {
@@ -203,15 +217,12 @@ function App() {
         }}
       />
       <div className="input-group input-group-lg"><h2>Redeem your card for BeoSpace</h2></div>
-      
-      <form onSubmit={onSubmitForm} ref={form}>
-        <div className="input-group input-group-lg">
-          <span className="input-group-text" id="inputGroup-sizing-lg">Email</span>
-          <input type="text" id="userEmail" name='user_email' className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" />
-          <button className="btn btn-primary" type="submit" value="Submit" onClick={() => setButtonPopup(true)}>Submit</button>
-          {/* <Popup trigger={buttonPopup}><h2>Cao</h2></Popup> */}
-        </div>
-      </form>
+      <div>
+      <Form isEmailProvided = {emailProvided} eventFunc = {emailProvided? onSubmitVerificationCode: onSubmitForm}></Form>
+      </div>
+      <div>
+      <Popup trigger={buttonPopup} func = {closePopUp} content={text}></Popup>
+      </div>
     </div>
   );
 }
