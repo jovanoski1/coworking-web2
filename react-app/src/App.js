@@ -8,12 +8,12 @@ import Popup from './components/Popup';
 
 function App() {
   const form=useRef();
-  const [email,setEmail] =useState("");
+  
   const [buttonPopup,setButtonPopup]=useState(false);
   const params = new URLSearchParams(window.location.search);
 
   const sendEmail = e => {
-    e.preventDefault();
+     e.preventDefault();
 
     emailjs.sendForm('service_mjucys7', 'template_q3h2s7u', form.current, 'YNnI5Oxb2jDlOkwVn')
       .then((result) => {
@@ -25,16 +25,16 @@ function App() {
 
 
   const onSubmitForm = async e => {
-    e.preventDefault();
-     console.log(window.location.search)
-     console.log(params.get('hash'));
-     try{
-       const hash=params.get('hash');
+   
+      e.preventDefault();
+      const email = document.getElementById("userEmail").value;
+      try{
+        const hash=params.get('hash');
         const response = await fetch("https://coworking-khuti.ondigitalocean.app/api/updateTicket" ,{
          method: "PUT",
          headers:{"Content-Type": "application/json"},
          body: JSON.stringify({hash,email})
-       });
+      });
        sendEmail(e);
        console.log(response);
      }
@@ -207,7 +207,7 @@ function App() {
       <form onSubmit={onSubmitForm} ref={form}>
         <div className="input-group input-group-lg">
           <span className="input-group-text" id="inputGroup-sizing-lg">Email</span>
-          <input type="text" name='user_email' required value={email} onChange={e => setEmail(e.target.value)} className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" />
+          <input type="text" id="userEmail" name='user_email' className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" />
           <button className="btn btn-primary" type="submit" value="Submit" onClick={() => setButtonPopup(true)}>Submit</button>
           {/* <Popup trigger={buttonPopup}><h2>Cao</h2></Popup> */}
         </div>
