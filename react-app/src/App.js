@@ -17,11 +17,11 @@ function App() {
   const [text, setText] = useState();
   const params = new URLSearchParams(window.location.search);
   const hash=params.get('hash');
-
+  const [email,setEmail]=useState("");
 
   const onSubmitForm = async e => {
     e.preventDefault();
-    const email = document.getElementById("userEmail").value;
+    
     setEmailProvided(true);
     try {
      const body={email,hash};
@@ -33,6 +33,7 @@ function App() {
          body: JSON.stringify(body)
        }
      );
+     console.log(email);
      console.log(response);
     } catch (err) {
      console.error(err.message);
@@ -89,7 +90,7 @@ function App() {
       
       <div className="input-group input-group-lg"><h2>Redeem your card for BeoSpace</h2></div>
       <div>
-      <Form isEmailProvided = {emailProvided} eventFunc = {emailProvided? onSubmitVerificationCode: onSubmitForm}></Form>
+      <Form id="forma" sendEmailtoParent = {setEmail}isEmailProvided = {emailProvided}  eventFunc = {emailProvided? onSubmitVerificationCode: onSubmitForm}></Form>
       <div className="qrCode">
         <QRComponent trigger={hash} content={hash}></QRComponent>
       </div>
