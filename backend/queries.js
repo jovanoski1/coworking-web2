@@ -393,8 +393,8 @@ async function sendEmail2(email, hash, date) {
 }
 
 async function generateVerificationCode(request, response) {
-    const { email, hash } = request.body
-    
+
+    const { hash, email } = request.body
     const rand = Math.floor(Math.random() * (1000000 - 100000) + 100000); //rand in range [100000, 999999]
     console.log("Prosao");
     pool.query(

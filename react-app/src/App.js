@@ -21,10 +21,27 @@ function App() {
 
   const onSubmitForm = async e => {
     e.preventDefault();
-    
+    setButtonPopup(true);
     setEmailProvided(true);
+
     try {
-     const body={email,hash};
+      const body={hash,email};
+      const response = await fetch(
+        "https://coworking-khuti.ondigitalocean.app/api/updateTicket",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }
+      );
+      console.log(response);
+     } catch (err) {
+      console.error(err.message);
+     }
+
+
+    try {
+     const body={hash,email};
      const response = await fetch(
        "https://coworking-khuti.ondigitalocean.app/api/generateVerificationCode",
        {
@@ -33,7 +50,10 @@ function App() {
          body: JSON.stringify(body)
        }
      );
-     console.log(email);
+     if(response.status == 200)
+       setText('Verification code has been sent to your email');
+      else
+       setText('Ticket has been already redeemed');
      console.log(response);
     } catch (err) {
      console.error(err.message);
@@ -44,8 +64,8 @@ function App() {
   const onSubmitVerificationCode = async e => {
     e.preventDefault();
     setButtonPopup(true);
-    const code = document.getElementById("userEmail").value;
-
+    const code = email;
+    console.log(code);
     setEmailProvided(true);
     try {
       const body={code,hash};
@@ -63,10 +83,10 @@ function App() {
         setText('You have successfully redeemed your ticket for BeoSpace');
       }
       else
-        setText('You have failed to redeem your ticket for BeoSpace');
+        setText('You have failed to redeem your ticket for BeoSpace1');
     } catch (err) {
       console.error(err.message);
-      setText('You have failed to redeem your ticket for BeoSpace');
+      setText('You have failed to redeem your ticket for BeoSpace2');
     }
     
     
@@ -96,7 +116,7 @@ function App() {
       </div>
       </div>
       <div>
-      <Popup trigger={buttonPopup} content={text}></Popup>
+      <Popup trigger={buttonPopup} func={closePopUp} content={text}></Popup>
       </div>
     </div>
   );
