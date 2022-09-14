@@ -1,14 +1,18 @@
 import React from 'react'
+import '../Popup.css';
 
-function Popup(props) {
-  return (props.trigger)?(
+function Popup({trigger, func, content}) {
+  return (trigger)?(
     <div>
-        <div className="popup">
-            <button >Close</button>
-            {props.children}
+        <div className="modal">
+            <div className='popup-content'>
+              <p>{content}</p>
+              <button onClick={func}>Close</button>
+            </div>
         </div>
     </div>
-  ):"";
+  ):null;
 }
 
 export default Popup
+

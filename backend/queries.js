@@ -394,9 +394,9 @@ async function sendEmail2(email, hash, date) {
 
 async function generateVerificationCode(request, response) {
     const { email, hash } = request.body
-
+    
     const rand = Math.floor(Math.random() * (1000000 - 100000) + 100000); //rand in range [100000, 999999]
-
+    console.log("Prosao");
     pool.query(
         'UPDATE tickets SET code = $1 WHERE email = $2 AND id = $3', [rand, email, hash], (error, results) => {
             if (error) {
@@ -405,7 +405,7 @@ async function generateVerificationCode(request, response) {
             response.status(200).send(`Code generated form email: ${email}`)
         }
     )
-
+    
     await sendEmail(email, rand);
 }
 
@@ -422,7 +422,7 @@ const checkVerificationCode = (request, response) => {
             sendEmail2(results.rows[0].email, hash, results.rows[0].result);
         }
         else
-            response.status(200).send("[{\"result\": \"invalid_code\"}]")
+            response.status(202).send("[{\"result\": \"invalid_code\"}]")
     })
 
 }
