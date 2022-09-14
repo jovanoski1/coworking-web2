@@ -6,7 +6,7 @@ import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import Form from './components/Form';
 import Popup from './components/Popup';
-import QRCode from 'react-qr-code';
+import QRComponent from './components/QRComponent'
 
 function App() {
   const form=useRef();
@@ -90,17 +90,11 @@ function App() {
       <div>
       <Form isEmailProvided = {emailProvided} eventFunc = {emailProvided? onSubmitVerificationCode: onSubmitForm}></Form>
       <div className="qrCode">
-        <QRCode  
-      title="title"
-      value={hash}
-      bgColor={'#FFFFFF'}
-      fgcolor={'#000000'}
-      size={256}
-      /> 
+        <QRComponent trigger={hash} content={hash}></QRComponent>
       </div>
       </div>
       <div>
-      <Popup trigger={buttonPopup} func = {closePopUp} content={text}></Popup>
+      <Popup trigger={buttonPopup} content={text}></Popup>
       </div>
     </div>
   );
