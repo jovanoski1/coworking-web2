@@ -11,7 +11,7 @@ import QRComponent from './components/QRComponent'
 
 function App() {
   const form=useRef();
-  
+  const [emailSaved, setEmailSaved]=useState("");
   const [buttonPopup,setButtonPopup]=useState(false);
   const [emailProvided,setEmailProvided] = useState(false);
   const [text, setText] = useState();
@@ -23,11 +23,11 @@ function App() {
     e.preventDefault();
     setButtonPopup(true);
     setEmailProvided(true);
-
+    setEmailSaved(email);
     try {
-      const body={hash,email};
+      const body={email,hash};
       const response = await fetch(
-        "https://coworking-khuti.ondigitalocean.app/api/updateTicket",
+        "https://coworking-khuti.ondigitalocean.app/api/sendCodeToEmail",
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -38,37 +38,19 @@ function App() {
      } catch (err) {
       console.error(err.message);
      }
-
-
-    try {
-     const body={hash,email};
-     const response = await fetch(
-       "https://coworking-khuti.ondigitalocean.app/api/generateVerificationCode",
-       {
-         method: "PUT",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify(body)
-       }
-     );
-     if(response.status == 200)
-       setText('Verification code has been sent to your email');
-      else
-       setText('Ticket has been already redeemed');
-     console.log(response);
-    } catch (err) {
-     console.error(err.message);
-     console.log("Greska");
-    }
-
   }
+
   const onSubmitVerificationCode = async e => {
     e.preventDefault();
     setButtonPopup(true);
     const code = email;
-    console.log(code);
+    setEmail(emailSaved);
     setEmailProvided(true);
+    
+    console.log(email);
+    console.log(code);
     try {
-      const body={code,hash};
+      const body={code:code,hash:hash,email:emailSaved};
       const response = await fetch(
        "https://coworking-khuti.ondigitalocean.app/api/checkVerificationCode",
        {
