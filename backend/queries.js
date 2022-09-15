@@ -42,7 +42,9 @@ const insertTicket = (request, response) => {
         }
 
         if (selectResult.rowCount == 0) {
-            pool.query('INSERT INTO tickets (id, end_date) VALUES ($1, $2)', [hash, endDate], (error, insertResult) => {
+
+            const rand = Math.floor(Math.random() * (1000000 - 100000) + 100000); //rand in range [100000, 999999]
+            pool.query('INSERT INTO tickets (id, end_date, code) VALUES ($1, $2, $3)', [hash, endDate, rand], (error, insertResult) => {
                 if (error) {
                     throw error
                 }
@@ -52,19 +54,6 @@ const insertTicket = (request, response) => {
         else
             response.status(208).send('Ticket already exists')
     })
-}
-
-const updateTicket = (request, response) => {
-    const { hash, email } = request.body
-
-    pool.query(
-        'UPDATE tickets SET email = $1 WHERE id = $2 AND email is null', [email, hash], (error, results) => {
-            if (error) {
-                throw error
-            }
-            response.status(200).send(`Ticket modified with ID: ${hash}`)
-        }
-    )
 }
 
 const deleteTicket = (request, response) => {
@@ -120,7 +109,7 @@ async function sendEmail(email, code) {
 
 // sgMail.send(msg);
 
-function getMessage2(email, imageb64, date) {
+function generateTicketForMail(email, imageb64, date) {
 
     var date_parts = date.split("/");
 
@@ -374,12 +363,12 @@ body {
     };
 }
 
-async function sendEmail2(email, hash, date) {
+async function sendTicketToEmail(email, hash, date) {
     try {
         QRCode.toDataURL(hash, function (err, url) {
 
             imageb64 = url.replace('data:image/png;base64,', '');
-            sendGridMail.send(getMessage2(email, imageb64, date));
+            sendGridMail.send(generateTicketForMail(email, imageb64, date));
         })
 
         console.log('Test email sent successfully');
@@ -392,46 +381,52 @@ async function sendEmail2(email, hash, date) {
     }
 }
 
-async function generateVerificationCode(request, response) {
+async function sendCodeToEmail(request, response) {
     const { email, hash } = request.body
-    
-    const rand = Math.floor(Math.random() * (1000000 - 100000) + 100000); //rand in range [100000, 999999]
-    console.log("Prosao");
-    pool.query(
-        'UPDATE tickets SET code = $1 WHERE email = $2 AND id = $3', [rand, email, hash], (error, results) => {
-            if (error) {
-                throw error
-            }
-            response.status(200).send(`Code generated form email: ${email}`)
-        }
-    )
-    
-    await sendEmail(email, rand);
-}
 
-const checkVerificationCode = (request, response) => {
-    const { code, hash } = request.body
-
-    pool.query('SELECT code, email, TO_CHAR(end_date, \'dd/mm/yyyy\') AS result FROM tickets where code = $1 AND id = $2', [code, hash], (error, results) => {
+    pool.query('SELECT code FROM tickets where id= $1', [hash], (error, results) => {
         if (error) {
             throw error
         }
 
         if (results.rowCount > 0) {
-            response.status(200).send("[{\"result\": \"valid_code\"}]")
-            sendEmail2(results.rows[0].email, hash, results.rows[0].result);
+            response.status(200).send("Code sent to email successfully");
+            sendEmail(email, results.rows[0].code);
         }
         else
-            response.status(202).send("[{\"result\": \"invalid_code\"}]")
+            response.status(200).send("Sending code failed");
+    })
+}
+
+const checkVerificationCode = (request, response) => {
+    const { code, hash, email } = request.body
+
+    pool.query('SELECT code, TO_CHAR(end_date, \'dd/mm/yyyy\') AS result FROM tickets where code = $1 AND id = $2 AND email is NULL', [code, hash], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        if (results.rowCount > 0) {
+            pool.query(
+                'UPDATE tickets SET email = $1 WHERE id = $2 AND email is null', [email, hash], (error, results) => {
+                    if (error) {
+                        throw error
+                    }
+                    response.status(200).send(`Ticket modified with ID: ${hash}`)
+                }
+            )
+            sendTicketToEmail(email, hash, results.rows[0].result);
+        }
+        else
+            response.status(202).send("[{\"result\": \"invalid_code or already redeemed\"}]")
     })
 
 }
 
 module.exports = {
     insertTicket,
-    updateTicket,
     deleteTicket,
     selectEmail,
-    generateVerificationCode,
+    sendCodeToEmail,
     checkVerificationCode
 }
