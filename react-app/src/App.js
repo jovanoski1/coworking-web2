@@ -34,6 +34,10 @@ function App() {
           body: JSON.stringify(body)
         }
       );
+      if(response.status == 200)
+       setText('Verification code has been sent to your email');
+      else
+       setText('Ticket has been already redeemed');
       console.log(response);
      } catch (err) {
       console.error(err.message);
