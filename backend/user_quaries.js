@@ -18,7 +18,7 @@ const pool = new Pool({
 const selectUser = (request, response) => {
     const { wallet_address } = request.body
 
-    pool.query('SELECT (avatar) as result FROM users WHERE wallet_address = LOWER(($1))', [wallet_address], (error, selectResult) => {
+    pool.query('SELECT (avatar) as result FROM users WHERE LOWER(wallet_address) = LOWER(($1))', [wallet_address], (error, selectResult) => {
         if (error) {
             throw error
         }
@@ -48,7 +48,7 @@ const updateAvatar = (request, response) => {
     const { wallet_address, avatar } = request.body
 
     pool.query(
-        'UPDATE users SET avatar = $2 WHERE wallet_address = $1', [wallet_address, avatar], (error, results) => {
+        'UPDATE users SET avatar = $2 WHERE LOWER(wallet_address) = LOWER($1)', [wallet_address, avatar], (error, results) => {
             if (error) {
                 throw error
             }
@@ -61,7 +61,7 @@ const updateAvatar = (request, response) => {
 const deleteUser = (request, response) => {
     const { wallet_address } = request.body
 
-    pool.query('DELETE FROM users WHERE wallet_address = $1', [wallet_address], (error, results) => {
+    pool.query('DELETE FROM users WHERE LOWER(wallet_address) = LOWER($1)', [wallet_address], (error, results) => {
         if (error) {
             throw error
         }
