@@ -18,7 +18,7 @@ const pool = new Pool({
 const selectUser = (request, response) => {
     const { wallet_address } = request.body
 
-    pool.query('SELECT (avatar) as result FROM users WHERE wallet_address = ($1)', [wallet_address], (error, selectResult) => {
+    pool.query('SELECT (avatar) as result FROM users WHERE wallet_address = LOWER(($1))', [wallet_address], (error, selectResult) => {
         if (error) {
             throw error
         }
