@@ -6,7 +6,8 @@ app.options('*', cors());
 
 const bodyParser = require('body-parser')
 
-const db = require('./queries')
+const db = require('./ticket_queries')
+const db2 = require('./user_quaries')
 const port = 3000
 
 app.use(bodyParser.json())
@@ -23,8 +24,12 @@ app.get('/', (request, response) => {
 app.post('/insertTicket', db.insertTicket)
 app.delete('/deleteTicket', db.deleteTicket)
 app.post('/selectEmail', db.selectEmail)
-app.put('/sendCodeToEmail', db.sendCodeToEmail);
+app.put('/sendCodeToEmail', db.sendCodeToEmail)
 app.post('/checkVerificationCode', db.checkVerificationCode)
+app.post('/selectUser', db2.selectUser)
+app.post('/insertUser', db2.insertUser)
+app.post('/updateAvatar', db2.updateAvatar)
+app.post('/deleteUser', db2.deleteUser)
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
