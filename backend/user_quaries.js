@@ -35,7 +35,7 @@ const selectUser = (request, response) => {
 const insertUser = (request, response) => {
     const { wallet_address, avatar } = request.body
 
-    pool.query('INSERT INTO users (wallet_address, avatar) VALUES ($1, $2)', [wallet_address, avatar], (error, insertResult) => {
+    pool.query('INSERT INTO users (wallet_address, avatar) VALUES (LOWER($1), LOWER($2))', [wallet_address, avatar], (error, insertResult) => {
         if (error) {
             throw error
         }
