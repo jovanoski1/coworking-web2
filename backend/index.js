@@ -31,6 +31,10 @@ app.post('/insertUser', db2.insertUser)
 app.post('/updateAvatar', db2.updateAvatar)
 app.post('/deleteUser', db2.deleteUser)
 
+app.post('/shareTicket', db.shareTicket)
+app.post('/activateTicket', db.activateTicket)
+app.post('/selectTicktes', db.selectTicktes)
+
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
 })

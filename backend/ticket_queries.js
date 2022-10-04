@@ -121,10 +121,67 @@ const checkVerificationCode = (request, response) => {
 }
 
 
+//updating email column to set new potential owner of card
+//email becomes final owner of card when column active is set to true (that happens after redeeaming card - activateTicket function)
+const shareTicket = (request, response) => {
+    const { hash, email } = request.body
+
+    pool.query(
+        'UPDATE tickets SET email = $1 WHERE id = $2 AND activated = false', [email, hash], (error, results) => {
+            if (error) {
+                throw error
+            }
+
+            if (results.rowCount == 1)
+                response.status(200).send(`Potential redeemer seted for ticket with id: ${hash}`)
+            else
+                response.status(200).send(`Ticket with id already activated, id: ${hash}`)
+        }
+    )
+
+}
+
+
+//updating email column to set new potential owner of card
+//email becomes final owner of card when column active is set to true (that happens after redeeaming card)
+const activateTicket = (request, response) => {
+    const { hash, email } = request.body
+
+    pool.query(
+        'UPDATE tickets SET activated = $3 WHERE id = $2 AND email = $1', [email, hash, true], (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).send(`Ticket activated with id: ${hash}`)
+        }
+    )
+
+}
+
+
+//selects all tickets for user thah has passed email
+const selectTicktes = (request, response) => {
+    const { email } = request.body
+
+    pool.query('SELECT id, end_date, activated FROM tickets where email = $1', [email], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        if (results.rowCount > 0)
+            response.status(200).send(results.rows)
+        else
+            response.status(200).send("[{\"result\": \"no_tickets\"}]")
+    })
+}
+
 module.exports = {
     insertTicket,
     deleteTicket,
     selectEmail,
     sendCodeToEmail,
-    checkVerificationCode
+    checkVerificationCode,
+    shareTicket,
+    activateTicket,
+    selectTicktes
 }

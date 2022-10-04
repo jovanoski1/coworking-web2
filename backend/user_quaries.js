@@ -15,6 +15,7 @@ const pool = new Pool({
 })
 
 
+//selects info about user with passed wallet_address
 const selectUser = (request, response) => {
     const { wallet_address } = request.body
 
@@ -32,6 +33,7 @@ const selectUser = (request, response) => {
 }
 
 
+//inserts user to db, with passed wallet address and avatar
 const insertUser = (request, response) => {
     const { wallet_address, avatar } = request.body
 
@@ -44,6 +46,7 @@ const insertUser = (request, response) => {
 }
 
 
+//updates avatar column for passed wallet_address
 const updateAvatar = (request, response) => {
     const { wallet_address, avatar } = request.body
 
@@ -58,6 +61,7 @@ const updateAvatar = (request, response) => {
 }
 
 
+//deletes user from db with passed wallet_address
 const deleteUser = (request, response) => {
     const { wallet_address } = request.body
 
