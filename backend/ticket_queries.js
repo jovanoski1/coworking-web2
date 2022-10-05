@@ -133,7 +133,7 @@ const shareTicket = (request, response) => {
             }
 
             if (results.rowCount == 1)
-                response.status(200).send(`Potential redeemer seted for ticket with id: ${hash}`)
+                response.status(201).send(`Potential redeemer seted for ticket with id: ${hash}`)
             else
                 response.status(200).send(`Ticket with id already activated, id: ${hash}`)
         }
