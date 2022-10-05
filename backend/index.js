@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 
 const db = require('./ticket_queries')
 const db2 = require('./user_quaries')
-const port = 3002
+const port = 3000
 
 app.use(bodyParser.json())
 app.use(
