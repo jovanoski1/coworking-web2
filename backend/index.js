@@ -9,12 +9,13 @@ const bodyParser = require('body-parser')
 
 const db = require('./ticket_queries')
 const db2 = require('./user_quaries');
+const notification = require('./notification_quaries')
 const { DatabaseError } = require("pg");
-const port = 3000
+const port = 3002
 
 const socketIO = require('socket.io')(http, {
     cors: {
-        origin: "http://localhost:3000"
+        origin: "http://localhost:3002"
     }
 });
 
@@ -43,6 +44,9 @@ app.post('/shareTicket', db.shareTicket)
 app.post('/activateTicket', db.activateTicket)
 app.post('/selectTicktes', db.selectTicktes)
 
+app.post('/selectAllNotifacations', notification.selectAllNotifacations)
+app.post('/updateNotification', notification.updateNotification)
+
 
 let user_map = {};
 
@@ -69,6 +73,9 @@ socketIO.on('connection', (socket) => {
         if (!(typeof receiver_socket === "undefined")) {
             console.log("Receiver socket: " + receiver_socket);
             receiver_socket.emit("card_received", (data.receiver_email + " received new card from: " + data.sender_email));
+
+            console.log("Pozivanje fje");
+            notification.insertNotification(data.receiver_email, "You got new card from " + data.sender_email);
         }
         else
             console.log("Email: " + data.receiver_email + " is not present in user_map");
