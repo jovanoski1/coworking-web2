@@ -61,17 +61,17 @@ socketIO.on('connection', (socket) => {
     setInterval(() => { socket.emit("hello from server") }, 5000);
 
     socket.on("shared_ticket", (data) => {
-        console.log(data.email + " : " + data.hash);
+        console.log(data.receiver_email + " : " + data.hash);
 
-        let receiver_socket = user_map[data.email];
+        let receiver_socket = user_map[data.receiver_email];
 
         //case when user is not present in user_map, thus the socket is undefined
         if (!(typeof receiver_socket === "undefined")) {
             console.log("Receiver socket: " + receiver_socket);
-            receiver_socket.emit("card_received", ("You have received new card from: " + data.email));
+            receiver_socket.emit("card_received", (data.receiver_email + " received new card from: " + data.sender_email));
         }
         else
-            console.log("Email: " + data.email + " is not present in user_map");
+            console.log("Email: " + data.receiver_email + " is not present in user_map");
     })
 });
 
