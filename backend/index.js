@@ -11,11 +11,11 @@ const db = require('./ticket_queries')
 const db2 = require('./user_quaries');
 const notification = require('./notification_quaries')
 const { DatabaseError } = require("pg");
-const port = 3002
+const port = 3000
 
 const socketIO = require('socket.io')(http, {
     cors: {
-        origin: "http://localhost:3002"
+        origin: "http://localhost:3000"
     }
 });
 
