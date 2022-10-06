@@ -175,6 +175,18 @@ const selectTicktes = (request, response) => {
     })
 }
 
+
+//selects all ticket 
+//result will be past in index js for emitting custom notification
+async function selectAllTickets() {
+
+    var ret;
+    ret = await pool.query('SELECT id, email, end_date, activated FROM tickets WHERE email IS NOT NULL', []);
+
+
+    return ret.rows;
+}
+
 module.exports = {
     insertTicket,
     deleteTicket,
@@ -183,5 +195,6 @@ module.exports = {
     checkVerificationCode,
     shareTicket,
     activateTicket,
-    selectTicktes
+    selectTicktes,
+    selectAllTickets
 }

@@ -14,6 +14,7 @@ const pool = new Pool({
     }
 })
 
+
 //inserts notification to db, with passed email and notification msg
 function insertNotification(email, msg) {
 
@@ -26,7 +27,6 @@ function insertNotification(email, msg) {
         }
     })
 }
-
 
 
 //selects all cards for specified user (by email addrs)

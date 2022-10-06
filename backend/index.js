@@ -11,6 +11,7 @@ const db = require('./ticket_queries')
 const db2 = require('./user_quaries');
 const notification = require('./notification_quaries')
 const { DatabaseError } = require("pg");
+const schedule = require('node-schedule');
 const port = 3000
 
 const socketIO = require('socket.io')(http, {
@@ -86,3 +87,49 @@ http.listen(port, () => {
     console.log(`Server listening on ${port}`);
 });
 
+
+
+
+function datediff(first, second) {
+    // Take the difference between the dates and divide by milliseconds per day.
+    // Round to nearest whole number to deal with DST.
+    return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+
+async function test() {
+    let json = await db.selectAllTickets();
+    let curr_date = new Date(); //todays date
+
+    for (var i in json) {
+        let ticket_end_date = json[i].end_date;
+        let ticket_owner = json[i].email;
+        let ticket_hash = json[i].id;
+
+        //console.log("ticket_end_date: " + ticket_end_date);
+        //console.log("curr_date " + curr_date);
+
+        let days_to_expire = datediff(ticket_end_date, curr_date);
+        if (days_to_expire > 0 && days_to_expire <= 2) {
+
+            let user_socket = user_map[ticket_owner];
+
+            if (!(typeof user_socket === "undefined")) {
+                console.log(ticket_hash);
+                user_socket.emit("card_received", ("Your card will expire in " + days_to_expire + " days"));
+
+                //TODO
+                //upisati notifikaciju u bazu
+                //handlovati received polje od notifikacije
+            }
+
+        }
+
+    }
+
+}
+
+const daily_server_trigger = schedule.scheduleJob({ hour: 9, minute: 0 }, () => {
+    test();
+});
+
+//setInterval(() => { test() }, 10000);
