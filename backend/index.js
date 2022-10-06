@@ -8,12 +8,13 @@ app.options('*', cors());
 const bodyParser = require('body-parser')
 
 const db = require('./ticket_queries')
-const db2 = require('./user_quaries')
-const port = 3000
+const db2 = require('./user_quaries');
+const { DatabaseError } = require("pg");
+const port = 3002
 
 const socketIO = require('socket.io')(http, {
     cors: {
-        origin: "http://localhost:3000"
+        origin: "http://localhost:3002"
     }
 });
 
@@ -49,17 +50,28 @@ socketIO.on('connection', (socket) => {
     console.log("socket connected:" + socket.id);
 
     socket.on("user_connected", (data) => {
+
+        //TODO:
+        //Ukoliko mejl vec postoji u mapi, znaci da je korisnik bio offline i da je sada online sa novim socketom
+        //potrebno je prikazati obavestenja koja su se desila dok je bio offline - realizacija preko baze
         user_map[data] = socket;
-        console.log("user "+ data + " : "+user_map[data]);
+        console.log("user " + data + " : " + user_map[data]);
     })
 
-    setInterval(() => {socket.emit("hello from server")}, 5000);
+    setInterval(() => { socket.emit("hello from server") }, 5000);
 
     socket.on("shared_ticket", (data) => {
         console.log(data.email + " : " + data.hash);
 
         let receiver_socket = user_map[data.email];
-        receiver_socket.emit("card_received", ("You have received new card from: "+data.email));
+
+        //case when user is not present in user_map, thus the socket is undefined
+        if (!(typeof receiver_socket === "undefined")) {
+            console.log("Receiver socket: " + receiver_socket);
+            receiver_socket.emit("card_received", ("You have received new card from: " + data.email));
+        }
+        else
+            console.log("Email: " + data.email + " is not present in user_map");
     })
 });
 
@@ -67,31 +79,3 @@ http.listen(port, () => {
     console.log(`Server listening on ${port}`);
 });
 
-// const server = app.listen(port, () => {
-//     console.log(`App running on port ${port}.`)
-// })
-
-
-/*
-io = socket(server);
-
-var user_map = {};
-
-io.on("connection", (socket) => {
-    console.log("socket connected:" + socket.id);
-
-    socket.on("user_connected", (data) => {
-        user_map[data] = socket;
-        console.log("user "+ data + " : "+user_map[data]);
-    })
-
-    setInterval(() => {socket.emit("hello from server")}, 5000);
-
-    socket.on("shared_ticket", (data) => {
-        console.log(data.email + " : " + data.hash);
-
-        let receiver_socket = user_map[data.email];
-        receiver_socket.emit("card_received", ("You have received new card from: "+data.email));
-    })
-    
-});*/
