@@ -33,7 +33,7 @@ function insertNotification(email, msg, title) {
 const selectAllNotifacations = (request, response) => {
     const { email } = request.body
 
-    pool.query('SELECT id, message, received, date, title FROM notifications WHERE user_id = $1 ', [email], (error, selectResult) => {
+    pool.query('SELECT id, message, received, date, title FROM notifications WHERE user_id = $1 order by date desc', [email], (error, selectResult) => {
         if (error) {
             throw error
         }
