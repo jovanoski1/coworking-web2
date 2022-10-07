@@ -15,11 +15,11 @@ const pool = new Pool({
 })
 
 
-//selects info about user with passed wallet_address
+//selects info about user with passed email
 const selectUser = (request, response) => {
-    const { wallet_address } = request.body
+    const { email } = request.body
 
-    pool.query('SELECT (avatar) as result FROM users WHERE LOWER(wallet_address) = LOWER(($1))', [wallet_address], (error, selectResult) => {
+    pool.query('SELECT (avatar) as result FROM users WHERE LOWER(email) = LOWER(($1))', [email], (error, selectResult) => {
         if (error) {
             throw error
         }
@@ -33,11 +33,11 @@ const selectUser = (request, response) => {
 }
 
 
-//inserts user to db, with passed wallet address and avatar
+//inserts user to db, with passed email and avatar
 const insertUser = (request, response) => {
-    const { wallet_address, avatar } = request.body
+    const { email, avatar } = request.body
 
-    pool.query('INSERT INTO users (wallet_address, avatar) VALUES (LOWER($1), LOWER($2))', [wallet_address, avatar], (error, insertResult) => {
+    pool.query('INSERT INTO users (email, avatar) VALUES (LOWER($1), LOWER($2))', [email, avatar], (error, insertResult) => {
         if (error) {
             throw error
         }
@@ -46,30 +46,30 @@ const insertUser = (request, response) => {
 }
 
 
-//updates avatar column for passed wallet_address
+//updates avatar column for passed email
 const updateAvatar = (request, response) => {
-    const { wallet_address, avatar } = request.body
+    const { email, avatar } = request.body
 
     pool.query(
-        'UPDATE users SET avatar = $2 WHERE LOWER(wallet_address) = LOWER($1)', [wallet_address, avatar], (error, results) => {
+        'UPDATE users SET avatar = $2 WHERE LOWER(email) = LOWER($1)', [email, avatar], (error, results) => {
             if (error) {
                 throw error
             }
-            response.status(200).send(`Avatar modified for user with wallet_address: ${wallet_address}`)
+            response.status(200).send(`Avatar modified for user with email: ${email}`)
         }
     )
 }
 
 
-//deletes user from db with passed wallet_address
+//deletes user from db with passed email
 const deleteUser = (request, response) => {
-    const { wallet_address } = request.body
+    const { email } = request.body
 
-    pool.query('DELETE FROM users WHERE LOWER(wallet_address) = LOWER($1)', [wallet_address], (error, results) => {
+    pool.query('DELETE FROM users WHERE LOWER(email) = LOWER($1)', [email], (error, results) => {
         if (error) {
             throw error
         }
-        response.status(200).send(`User deleted with wallet_address: ${wallet_address}`)
+        response.status(200).send(`User deleted with email: ${email}`)
     })
 }
 
