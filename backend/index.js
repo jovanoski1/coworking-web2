@@ -117,7 +117,7 @@ async function test() {
                 console.log(ticket_hash);
                 user_socket.emit("card_received", ("Your card will expire in " + days_to_expire + " days"));
 
-                notification.insertNotification(data.receiver_email, "You ticket " + data.sender_email + " is expiring in 2 days!", "Ticket expiring");
+                notification.insertNotification(ticket_owner, "You ticket " + ticket_hash + " is expiring in 2 days!", "Ticket expiring");
 
                 //TODO
                 //upisati notifikaciju u bazu
