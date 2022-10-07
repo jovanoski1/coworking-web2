@@ -76,7 +76,7 @@ socketIO.on('connection', (socket) => {
             receiver_socket.emit("card_received", (data.receiver_email + " received new card from: " + data.sender_email));
 
             console.log("Pozivanje fje");
-            notification.insertNotification(data.receiver_email, "You got new card from " + data.sender_email);
+            notification.insertNotification(data.receiver_email, "You got new card from " + data.sender_email, "Ticket received");
         }
         else
             console.log("Email: " + data.receiver_email + " is not present in user_map");
@@ -116,6 +116,8 @@ async function test() {
             if (!(typeof user_socket === "undefined")) {
                 console.log(ticket_hash);
                 user_socket.emit("card_received", ("Your card will expire in " + days_to_expire + " days"));
+
+                notification.insertNotification(data.receiver_email, "You ticket " + data.sender_email + " is expiring in 2 days!", "Ticket expiring");
 
                 //TODO
                 //upisati notifikaciju u bazu
