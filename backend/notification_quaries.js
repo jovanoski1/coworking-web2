@@ -61,8 +61,26 @@ const updateNotification = (request, response) => {
     )
 }
 
+
+//notificaqtion is considered unread when its column "received" is false in db
+//thus notification is considered unread when its not received
+//function return number of unread or read notifications depending on passed isReceived value
+const numberOfUnreadNotification = (request, response) => {
+    const { email, isReceived } = request.body
+
+    pool.query('SELECT DISTINCT COUNT(received) as result FROM notifications WHERE received = $2 AND user_id = $1', [email, isReceived], (error, selectResult) => {
+        if (error) {
+            throw error
+        }
+
+        response.status(200).send(selectResult.rows);
+    })
+}
+
+
 module.exports = {
     insertNotification,
     selectAllNotifacations,
-    updateNotification
+    updateNotification,
+    numberOfUnreadNotification
 }

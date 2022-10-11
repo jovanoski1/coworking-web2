@@ -47,6 +47,7 @@ app.post('/selectTicktes', db.selectTicktes)
 
 app.post('/selectAllNotifacations', notification.selectAllNotifacations)
 app.post('/updateNotification', notification.updateNotification)
+app.post('/numberOfUnreadNotification', notification.numberOfUnreadNotification)
 
 
 let user_map = {};
