@@ -16,12 +16,12 @@ const pool = new Pool({
 
 
 //inserts notification to db, with passed email and notification msg
-function insertNotification(email, msg, title) {
+function insertNotification(email, msg, title, ticket_hash) {
 
     //date of the moment of calling the function
     var datetime = new Date();
 
-    pool.query('INSERT INTO notifications (user_id, message, received, date, title) VALUES ($1, $2, $3, $4, $5)', [email, msg, false, datetime, title], (error, results) => {
+    pool.query('INSERT INTO notifications (user_id, message, received, date, title, ticket_hash) VALUES ($1, $2, $3, $4, $5, $6)', [email, msg, false, datetime, title, ticket_hash], (error, results) => {
         if (error) {
             throw error
         }
@@ -33,7 +33,7 @@ function insertNotification(email, msg, title) {
 const selectAllNotifacations = (request, response) => {
     const { email } = request.body
 
-    pool.query('SELECT id, message, received, date, title FROM notifications WHERE user_id = $1 order by date desc', [email], (error, selectResult) => {
+    pool.query('SELECT id, message, received, date, title, ticket_hash FROM notifications WHERE user_id = $1 order by date desc', [email], (error, selectResult) => {
         if (error) {
             throw error
         }

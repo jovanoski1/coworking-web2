@@ -44,6 +44,7 @@ app.post('/deleteUser', db2.deleteUser)
 app.post('/shareTicket', db.shareTicket)
 app.post('/activateTicket', db.activateTicket)
 app.post('/selectTicktes', db.selectTicktes)
+app.post('/selectSingleTicket', db.selectSingleTicket)
 
 app.post('/selectAllNotifacations', notification.selectAllNotifacations)
 app.post('/updateNotification', notification.updateNotification)
@@ -77,7 +78,7 @@ socketIO.on('connection', (socket) => {
             receiver_socket.emit("card_received", (data.receiver_email + " received new card from: " + data.sender_email));
 
             console.log("Pozivanje fje");
-            notification.insertNotification(data.receiver_email, "You got new card from " + data.sender_email, "Ticket received");
+            notification.insertNotification(data.receiver_email, "You got new card from " + data.sender_email, "Ticket received", data.hash);
         }
         else
             console.log("Email: " + data.receiver_email + " is not present in user_map");

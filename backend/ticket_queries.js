@@ -159,7 +159,7 @@ const activateTicket = (request, response) => {
 }
 
 
-//selects all tickets for user thah has passed email
+//selects all tickets for user that has passed email
 const selectTicktes = (request, response) => {
     const { email } = request.body
 
@@ -172,6 +172,22 @@ const selectTicktes = (request, response) => {
             response.status(200).send(results.rows)
         else
             response.status(200).send("[{\"result\": \"no_tickets\"}]")
+    })
+}
+
+//selects single ticket with passed hash value
+const selectSingleTicket = (request, response) => {
+    const { ticket_id } = request.body
+
+    pool.query('SELECT id, email, end_date, activated FROM tickets where id = $1', [ticket_id], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        if (results.rowCount > 0)
+            response.status(200).send(results.rows)
+        else
+            response.status(200).send("[{\"result\": \"invalid_ticket_id\"}]")
     })
 }
 
@@ -196,5 +212,6 @@ module.exports = {
     shareTicket,
     activateTicket,
     selectTicktes,
-    selectAllTickets
+    selectAllTickets,
+    selectSingleTicket
 }
