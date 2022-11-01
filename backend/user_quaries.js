@@ -32,6 +32,23 @@ const selectUser = (request, response) => {
     })
 }
 
+//checks if user exists in db
+const checkUser = (request, response) => {
+    const { email } = request.body
+
+    pool.query('SELECT (email) as result FROM users WHERE LOWER(email) = LOWER(($1))', [email], (error, selectResult) => {
+        if (error) {
+            throw error
+        }
+
+        if (selectResult.rowCount == 0) {
+            response.status(404).send();
+        }
+        else
+            response.status(200).send();
+    })
+}
+
 
 //inserts user to db, with passed email and avatar
 const insertUser = (request, response) => {
@@ -76,6 +93,7 @@ const deleteUser = (request, response) => {
 
 module.exports = {
     selectUser,
+    checkUser,
     insertUser,
     updateAvatar,
     deleteUser
