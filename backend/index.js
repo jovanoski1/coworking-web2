@@ -46,6 +46,7 @@ app.post('/shareTicket', db.shareTicket)
 app.post('/activateTicket', db.activateTicket)
 app.post('/selectTicktes', db.selectTicktes)
 app.post('/selectSingleTicket', db.selectSingleTicket)
+app.post('/checkIfTicketActivated', db.checkIfTicketActivated)
 
 app.post('/selectAllNotifacations', notification.selectAllNotifacations)
 app.post('/updateNotification', notification.updateNotification)

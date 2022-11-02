@@ -191,6 +191,21 @@ const selectSingleTicket = (request, response) => {
     })
 }
 
+//checks if ticket with ticket_id is activated
+const checkIfTicketActivated = (request, response) => {
+    const { ticket_id } = request.body
+
+    pool.query('SELECT activated FROM tickets where id = $1', [ticket_id], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        if (results.rowCount > 0)
+            response.status(200).send(results.rows[0])
+        else
+            response.status(200).send("[{\"result\": \"invalid_ticket_id\"}]")
+    })
+}
 
 //selects all ticket 
 //result will be past in index js for emitting custom notification
@@ -213,5 +228,6 @@ module.exports = {
     activateTicket,
     selectTicktes,
     selectAllTickets,
-    selectSingleTicket
+    selectSingleTicket,
+    checkIfTicketActivated,
 }
